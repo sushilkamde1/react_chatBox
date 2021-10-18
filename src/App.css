@@ -1,9 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .chatBox {
   border: 2px solid gray;
   border-radius: 5px;
   margin: 5px 0;
   padding: 10px;
   background-color: #90abe6;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
 }
 .container {
   display: flex;
@@ -13,6 +19,7 @@
 }
 .me .chatBox {
   background-color: #afec87;
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.5);
 }
 .btn {
   position: fixed;
@@ -25,6 +32,7 @@
   padding: 10px 0;
   flex-grow: 1;
 }
+
 .btn button {
   padding: 10px 0;
 }
@@ -33,18 +41,48 @@
   overflow-y: scroll;
   border: 1p solid black;
 }
+#main {
+  width: 100%;
+  height: auto;
+  position: relative;
+  background-color: #afec87;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 22% 96%, 0 100%, 0% 50%);
+}
 .input_box {
-  height: 100vh;
+  height: 93vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.user_input {
+.login {
   padding: 11px 15px;
   background-color: #f3dcb4;
+  font-weight: bold;
+  cursor: pointer;
   border: none;
   outline: none;
+  box-shadow: 3px 2px 1px rgba(0, 0, 0, 0.3);
+  border: 2px solid transparent;
+  transition: all 0.3s;
 }
-.input_box img {
-  cursor: pointer;
+.login:hover {
+  border: 2px solid orange;
+}
+.user_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#userName {
+  font-size: larger;
+}
+#userImg {
+  width: 60px;
+  border-radius: 50%;
+}
+#heading {
+  font-variant: small-caps;
+  text-align: center;
+  font-size: 30px;
 }

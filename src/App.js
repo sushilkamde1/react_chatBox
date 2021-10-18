@@ -1,53 +1,102 @@
 import { useEffect, useState } from "react";
 import { getDatabase, push, ref, set, onChildAdded } from "firebase/database";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import "./App.css";
 
 function App() {
-  const [name, setName] = useState("");
+  const provider = new GoogleAuthProvider();
+  const auth = getAuth();
+  const googleLogin = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        setUser({
+          name: result.user.displayName,
+          email: result.user.email,
+          UserImg: result.user.photoURL,
+        });
+        console.log(token, user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+  };
+
+  const [User, setUser] = useState([]);
+  console.log("user", User);
   const [chats, setChats] = useState([]);
   const [msg, setMsg] = useState("");
 
   const db = getDatabase();
   const chatListRef = ref(db, "posts");
 
+  const updateHeight = () => {
+    const msg = document.getElementById("msg");
+    if (msg) {
+      msg.scrollTop = msg.scrollHeight;
+    }
+  };
   useEffect(() => {
     onChildAdded(chatListRef, (data) => {
       setChats((chats) => [...chats, data.val()]);
+      setTimeout(() => {
+        updateHeight();
+      }, 100);
+      return () => {
+        console.log("cleaned up");
+      };
     });
   }, []);
 
   const sendMsg = () => {
     const newChatRef = push(chatListRef);
     set(newChatRef, {
-      name,
+      User,
       message: msg,
     });
     setMsg("");
   };
   return (
     <div>
-      {name ? null : (
-        <div className="input_box">
-          <input
-            type="text"
-            className="user_input"
-            onBlur={(e) => setName(e.target.value)}
-            placeholder="Enter Your Name To Start"
-          />
-          <img src="https://img.icons8.com/fluency/48/000000/start.png" />
+      {User.email ? null : (
+        <div id="main">
+          <h2 id="heading">React Chat Application</h2>
+          <div className="input_box">
+            <button className="login" onClick={() => googleLogin()}>
+              Google SignIn
+            </button>
+          </div>
         </div>
       )}
-      {name ? (
+      {User.email ? (
         <div>
-          <h3>User: {name}</h3>
-          <div className="msg_container">
+          <div className="user_container">
+            <span>
+              <img id="userImg" src={User.UserImg} />
+            </span>
+            <span id="userName"> {User.name}</span>
+          </div>
+          <div id="msg" className="msg_container">
             {chats.map((val, i) => (
               <div
                 key={i}
-                className={`container ${val.name === name ? "me" : ""}`}
+                className={`container ${
+                  val.User.name === User.name ? "me" : ""
+                }`}
               >
                 <p className="chatBox">
-                  <strong>{val.name}: </strong>
+                  <strong>{val.User.name}: </strong>
                   <span>{val.message}</span>
                 </p>
               </div>
