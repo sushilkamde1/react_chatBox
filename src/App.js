@@ -83,7 +83,7 @@ function App() {
         <div>
           <div className="user_container">
             <span>
-              <img id="userImg" src={User.UserImg} />
+              <img id="userImg" src={User.UserImg} alt="user" />
             </span>
             <span id="userName"> {User.name}</span>
           </div>
